@@ -3,7 +3,8 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 
-from .. import crud, schemas
+from .. import crud
+from .. import schemas
 from ..auth import get_current_user_id
 from ..database import get_session
 

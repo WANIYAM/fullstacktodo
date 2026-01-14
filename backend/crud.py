@@ -1,6 +1,7 @@
 from sqlmodel import Session, select
 
-from . import models, schemas
+from . import models
+from . import schemas
 
 
 def create_user(db: Session, user: schemas.UserCreate):
