@@ -1,7 +1,10 @@
-fastapi
-sqlmodel
-uvicorn
-python-dotenv
-passlib[bcrypt]
-python-jose[cryptography]
-bcrypt
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+sqlmodel==0.0.22
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.19
+python-dotenv==1.0.1
+google-genai==1.0.0
+pydantic==2.10.3
+pydantic-settings==2.6.1

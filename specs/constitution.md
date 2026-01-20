@@ -42,3 +42,9 @@ Spec-Driven Development.
 - Frontend can create and list tasks
 - Data persists in database
 - Specs folder fully reflects implementation
+
+## Phase III Scope
+- Introduce AI-assisted task management
+- Natural language input is allowed
+- Core CRUD behavior must remain unchanged
+- Phase II functionality must not regress

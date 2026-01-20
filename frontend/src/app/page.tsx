@@ -8,7 +8,7 @@ import {
   Plus,
   Zap,
   Sparkles} from 'lucide-react';
-import { getTasks, createTask, updateTask, deleteTask, logout, getCurrentUser } from './services/api';
+import { getTasks, createTask, updateTask, deleteTask, logout, getCurrentUser, getAccessToken } from './services/api';
 
 // --- New Components ---
 import TaskCard from './components/TaskCard';
@@ -43,6 +43,7 @@ export default function TasksPage() {
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [aiCommand, setAiCommand] = useState('');
   
 const inputRef = useRef<HTMLInputElement>(null);
 const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -226,6 +227,55 @@ useEffect(() => {
     }
   };
 
+const handleAiSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!aiCommand.trim()) {
+    showToast('AI command cannot be empty', 'error');
+    return;
+  }
+
+  const token = getAccessToken();
+  if (!token) {
+    showToast('You are not logged in', 'error');
+    router.push('/login');
+    return;
+  }
+
+  try {
+    console.log('Sending AI command:', aiCommand); // Debug log
+    
+    const response = await fetch('http://127.0.0.1:8000/ai/tasks', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ input: aiCommand }),
+    });
+
+    console.log('Response status:', response.status); // Debug log
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error response:', errorData); // Debug log
+      throw new Error(errorData.detail || 'AI command failed');
+    }
+
+    const data = await response.json();
+    console.log('Success response:', data); // Debug log
+
+    setAiCommand('');
+    showToast('AI command executed successfully!', 'success');
+    
+    // Refresh task list
+    const tasksData = await getTasks();
+    setTasks(tasksData);
+
+  } catch (err: any) {
+    console.error('Error executing AI command:', err);
+    showToast(err.message || 'Failed to execute AI command', 'error');
+  }
+};
   const handleLogout = async () => {
     try {
       await logout();
@@ -477,6 +527,45 @@ useEffect(() => {
                   </button>
                 </div>
               </div>
+
+              {/* AI Command Card */}
+              <motion.div
+                whileHover={{ y: -2 }}
+                className={`rounded-2xl p-6 backdrop-blur-xl border ${
+                  isDarkMode
+                    ? 'bg-gray-900/50 border-gray-800'
+                    : 'bg-white/50 border-gray-200'
+                } shadow-lg`}
+              >
+                <h3 className="font-semibold text-lg flex items-center gap-2 mb-4">
+                  <Sparkles className="w-5 h-5 text-purple-500" />
+                  AI Assistant
+                </h3>
+                <form onSubmit={handleAiSubmit}>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={aiCommand}
+                      onChange={(e) => setAiCommand(e.target.value)}
+                      placeholder="e.g., 'add a task to buy milk'"
+                      className={`w-full py-3 pl-4 pr-10 rounded-xl text-sm font-medium transition-all border ${
+                        isDarkMode
+                          ? 'bg-gray-800 border-gray-700 focus:ring-purple-500 focus:border-purple-500'
+                          : 'bg-gray-100 border-gray-300 focus:ring-purple-500 focus:border-purple-500'
+                      }`}
+                    />
+                    <button
+                      type="submit"
+                      className="absolute inset-y-0 right-0 flex items-center pr-3"
+                    >
+                      <Zap className="w-5 h-5 text-purple-500 hover:text-purple-400" />
+                    </button>
+                  </div>
+                  <p className="text-xs text-center pt-3 opacity-60">
+                    Use natural language to manage your tasks.
+                  </p>
+                </form>
+              </motion.div>
             </motion.div>
 
             {/* Main Tasks Area */}

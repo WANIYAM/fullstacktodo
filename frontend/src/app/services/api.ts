@@ -1,4 +1,3 @@
-
 import { Task, Priority } from '../types/task';
 
 const API_URL = 'http://127.0.0.1:8000';
@@ -169,7 +168,7 @@ export async function createTask(data: {
   description?: string | null;
   priority?: Priority;
 }): Promise<Task> {
-  const response = await fetch('/api/tasks', {
+  const response = await authenticatedFetch(`${API_URL}/tasks`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -194,7 +193,18 @@ export const updateTask = async (
     body: JSON.stringify(task),
   });
 
-  if (!response.ok) throw new Error('Failed to update task');
+  if (!response.ok) {
+    const error = await response.json().catch(() => null);
+    console.error('Update task error:', {
+      status: response.status,
+      statusText: response.statusText,
+      error,
+      url: `${API_URL}/tasks/${taskId}`,
+      body: task
+    });
+    throw new Error(error?.detail ?? `Failed to update task: ${response.status} ${response.statusText}`);
+  }
+  
   return response.json();
 };
 

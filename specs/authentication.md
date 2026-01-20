@@ -104,3 +104,11 @@ As an authenticated user, I want to log out of my account so that my session is 
 -   **SC-002**: Protected API endpoints correctly reject unauthorized access attempts with a 401 status code in 100% of test cases.
 -   **SC-003**: The system successfully handles 100 concurrent login requests without degradation in response time (under 1 second).
 -   **SC-004**: Password hashing algorithm meets industry security standards.
+
+## Phase III Extension
+
+### AI Service
+- AI is invoked from backend only
+- Frontend sends natural language input
+- Backend converts intent into task operations
+- AI does not access database directly

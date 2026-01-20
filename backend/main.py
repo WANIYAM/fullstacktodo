@@ -1,5 +1,7 @@
 from datetime import timedelta
 from typing import List
+from .routes import ai_tasks
+from dotenv import load_dotenv
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,6 +9,8 @@ from sqlmodel import Session, SQLModel
 
 from . import auth, crud, models, schemas
 from .database import engine, get_session
+
+load_dotenv()
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
@@ -123,6 +127,7 @@ def refresh_token(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired refresh token"
         )
+app.include_router(ai_tasks.router)
 
 @app.get("/me", response_model=schemas.UserReadWithTasks)
 def get_current_user_info(current_user: models.User = Depends(auth.get_current_user)):

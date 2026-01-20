@@ -74,3 +74,12 @@ class LoginRequest(BaseModel):
 class Message(BaseModel):
     message: str
     detail: Optional[str] = None
+
+class AITaskRequest(BaseModel):
+    input: str = Field(..., min_length=1, max_length=500)
+
+class AITaskResponse(BaseModel):
+    action: str
+    task: Optional[TaskRead] = None
+    tasks: Optional[List[TaskRead]] = None
+    message: str
