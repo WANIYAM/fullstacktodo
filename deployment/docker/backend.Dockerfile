@@ -10,7 +10,7 @@ RUN pip install uv
 COPY backend/requirements.txt .
 
 # Install Python dependencies using uv
-RUN uv pip install -r requirements.txt
+RUN uv pip install --system -r requirements.txt
 
 # Copy the rest of the backend application code
 COPY backend .

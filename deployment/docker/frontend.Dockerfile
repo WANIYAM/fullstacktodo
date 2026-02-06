@@ -27,8 +27,9 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 # Create a non-root user (best practice)
-RUN adduser --system --group appuser
+RUN addgroup -S appuser && adduser -S appuser -G appuser
 USER appuser
+
 
 # Copy necessary files for running the Next.js app
 # This includes the .next directory, public assets, and package.json/next.config.js for npm start
