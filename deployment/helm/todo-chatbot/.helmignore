@@ -1,0 +1,24 @@
+# Patterns to ignore when packaging Helm charts.
+# This file is a .gitignore-like file and is applied to all files in the chart.
+#
+# Lines starting with # are comments.
+# Lines starting with ! are exclusions.
+
+# Exclude common files
+.DS_Store
+.git/
+.gitignore
+.terraform/
+.vscode/
+
+# Exclude temporary files and build artifacts
+*.swp
+*.bak
+*.tmp
+*.log
+*.tar
+*.tgz
+*.zip
+
+# Exclude generated files
+# If you have specific generated files that should not be included in the chart, add them here.
