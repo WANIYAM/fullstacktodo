@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-backend
+  labels:
+    app: todo-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: todo-backend
+  template:
+    metadata:
+      labels:
+        app: todo-backend
+    spec:
+      containers:
+        - name: todo-backend
+          image: todo-backend:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: todo-secrets
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: 500m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-backend
+spec:
+  selector:
+    app: todo-backend
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
