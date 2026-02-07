@@ -1,0 +1,29 @@
+# Git
+.git
+.gitignore
+
+# Node
+node_modules
+npm-debug.log
+yarn.lock
+
+# Frontend builds
+dist
+build
+.next
+out
+
+# Python
+__pycache__
+*.pyc
+.venv
+.env
+
+# Docker
+Dockerfile
+docker-compose.yml
+
+# OS / IDE
+.vscode
+.idea
+.DS_Store

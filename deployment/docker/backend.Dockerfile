@@ -1,39 +1,25 @@
-# Stage 1: Builder
-FROM python:3.13-slim AS builder
+FROM python:3.13-slim
 
 WORKDIR /app
 
 # Install uv
-RUN pip install uv
+RUN pip install uv --break-system-packages
 
-# Copy requirements.txt from the backend directory
+# Copy requirements
 COPY backend/requirements.txt .
 
-# Install Python dependencies using uv
+# Install dependencies
 RUN uv pip install --system -r requirements.txt
 
-# Copy the rest of the backend application code
+# Copy application code
 COPY backend .
 
-# Stage 2: Runner
-FROM python:3.13-slim AS runner
+# Create non-root user
+RUN adduser --system --group appuser && chown -R appuser:appuser /app
 
-WORKDIR /app
-
-# Copy only necessary runtime dependencies from builder
-COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
-COPY --from=builder /usr/local/bin/uv /usr/local/bin/uv
-
-# Create a non-root user
-RUN adduser --system --group appuser
 USER appuser
 
-# Copy application code
-COPY --from=builder /app .
-
-# Expose the port FastAPI listens on
 EXPOSE 8000
 
-# Command to run the FastAPI application using Uvicorn
-# Assuming your main FastAPI app instance is named 'app' in 'main.py'
+# Run with uvicorn
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
